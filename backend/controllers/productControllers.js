@@ -1,4 +1,5 @@
 import { Product } from "../model/productModel.js";
+import ErrorHandler from "../utills/errorHandler.js";
 
 export const getProducts = async (req, res) => {
   try {
@@ -34,10 +35,7 @@ export const getProductById = async (req, res) => {
   const product = await Product.findById(req.params.id);
 
   if (!product) {
-    return res.status(404).json({
-      success: false,
-      message: "Product not found",
-    });
+    return next(new ErrorHandler("Product not found", 404)); // Ensure ErrorHandler is imported
   }
 
   res.status(200).json({
@@ -53,10 +51,7 @@ export const updateProduct = async (req, res) => {
     const product = await Product.findById(req.params.id);
 
     if (!product) {
-      return res.status(404).json({
-        success: false,
-        message: "Product not found",
-      });
+      return next(new ErrorHandler("Product not found", 404)); // Ensure ErrorHandler is imported
     }
 
     const updatedProduct = await Product.findByIdAndUpdate(
@@ -89,10 +84,7 @@ export const deleteProduct = async (req, res) => {
     const product = await Product.findById(req.params.id);
 
     if (!product) {
-      return res.status(404).json({
-        success: false,
-        message: "Product not found",
-      });
+      return next(new ErrorHandler("Product not found", 404)); // Ensure ErrorHandler is imported
     }
 
     await product.deleteOne(); // or use Product.findByIdAndDelete(req.params.id)
