@@ -5,14 +5,18 @@ import ErrorHandler from "../utills/errorHandler.js";
 
 export const getProducts = catchAsyncError(async (req, res) => {
   try {
-    const apiFilters = new APIFilters(Product.find(), req.query);
+    const apiFilters = new APIFilters(Product, req.query);
     apiFilters.search();
-    const products = await Product.find();
+
+    let products = apiFilters.query;
+    let filteredProductsCount = await products.length();
+    // const products = await Product.find();
 
     res.status(200).json({
       success: true,
       message: "All Products",
       totalProducts: products.length,
+      filteredProductsCount,
       products,
     });
   } catch (error) {
