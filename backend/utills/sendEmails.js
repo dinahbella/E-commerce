@@ -1,23 +1,22 @@
 import nodemailer from "nodemailer";
 
-const sendEmail = async (options) => {
+const sendEmail = async ({ email, subject, html }) => {
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port: process.env.SMTP_PORT,
+    secure: false, // true for port 465
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS,
     },
   });
 
-  const mailOptions = {
-    from: process.env.SMTP_FROM,
-    to: options.to,
-    subject: options.subject,
-    text: options.text,
-  };
-
-  await transporter.sendMail(mailOptions);
+  await transporter.sendMail({
+    from: `"Dinah Mall" <${process.env.SMTP_USER}>`,
+    to: email,
+    subject,
+    html,
+  });
 };
 
 export default sendEmail;

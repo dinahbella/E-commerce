@@ -1,4 +1,4 @@
-export const getResetPasswordToken = (user, resetUrl) => {
+export const getResetPasswordTemplate = (user, resetUrl) => {
   return `
       <!DOCTYPE html>
       <html lang="en">
