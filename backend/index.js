@@ -4,9 +4,11 @@ import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import productRoutes from "./routes/productRoutes.js";
+import { connectDatabase } from "./config/dbConnect.js";
 dotenv.config({ path: "backend/config/config.env" });
 
 const app = express();
+connectDatabase();
 const PORT = process.env.PORT || 3001;
 // middlewares
 app.use(express.json());
