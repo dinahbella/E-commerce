@@ -3,29 +3,28 @@ import { Product } from "../model/productModel.js";
 import APIFilters from "../utills/apiFilters.js";
 import ErrorHandler from "../utills/errorHandler.js";
 
+const resPerPage = 10; // ✅ define or import it if dynamic
+
 export const getProducts = catchAsyncError(async (req, res) => {
-  try {
-    const apiFilters = new APIFilters(Product, req.query);
-    apiFilters.search();
+  const apiFilters = new APIFilters(Product, req.query);
 
-    let products = apiFilters.query;
-    let filteredProductsCount = await products.length();
-    // const products = await Product.find();
+  apiFilters.search();
+  apiFilters.filters();
+  apiFilters.pagination(resPerPage);
 
-    res.status(200).json({
-      success: true,
-      message: "All Products",
-      totalProducts: products.length,
-      filteredProductsCount,
-      products,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to fetch products",
-      error: error.message,
-    });
-  }
+  const products = await apiFilters.query;
+  const filteredProductsCount = products.length;
+
+  const totalProducts = await Product.countDocuments(); // for all products, without filters
+
+  res.status(200).json({
+    success: true,
+    message: "All Products",
+    totalProducts,
+    filteredProductsCount,
+    resPerPage,
+    products,
+  });
 });
 
 //  create new product
