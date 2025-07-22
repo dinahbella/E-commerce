@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import User from "../model/userModel.js"; // ✅ Ensure correct path
+import { User } from "../model/userModel.js"; // ✅ Ensure correct path
 import ErrorHandler from "../utills/errorHandler.js";
 import catchAsyncError from "./catchAsyncError.js";
 
@@ -22,3 +22,18 @@ export const isAuthenticatedUser = catchAsyncError(async (req, res, next) => {
 
   next();
 });
+
+// authorize roles
+export const authorizeRoles = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new ErrorHandler(
+          `Role: ${req.user.role} is not allowed to access this resource`,
+          403
+        )
+      );
+    }
+    next();
+  };
+};
