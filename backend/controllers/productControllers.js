@@ -47,6 +47,7 @@ export const getProductById = async (req, res) => {
   });
 };
 
+// update product
 export const updateProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -82,6 +83,7 @@ export const updateProduct = async (req, res) => {
   }
 };
 
+// Delete product
 export const deleteProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
