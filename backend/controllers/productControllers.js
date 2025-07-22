@@ -1,7 +1,8 @@
+import catchAsyncError from "../middlewares/catchAsyncError.js";
 import { Product } from "../model/productModel.js";
 import ErrorHandler from "../utills/errorHandler.js";
 
-export const getProducts = async (req, res) => {
+export const getProducts = catchAsyncError(async (req, res) => {
   try {
     const products = await Product.find();
 
@@ -18,20 +19,20 @@ export const getProducts = async (req, res) => {
       error: error.message,
     });
   }
-};
+});
 
 //  create new product
-export const createProduct = async (req, res) => {
+export const createProduct = catchAsyncError(async (req, res) => {
   const product = await Product.create(req.body);
   res.status(201).json({
     success: true,
     message: "Product created successfully",
     product,
   });
-};
+});
 
 //  get product by id
-export const getProductById = async (req, res) => {
+export const getProductById = catchAsyncError(async (req, res) => {
   const product = await Product.findById(req.params.id);
 
   if (!product) {
@@ -43,10 +44,10 @@ export const getProductById = async (req, res) => {
     message: "Product fetched successfully",
     product,
   });
-};
+});
 
 // update product
-export const updateProduct = async (req, res) => {
+export const updateProduct = catchAsyncError(async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
 
@@ -76,10 +77,10 @@ export const updateProduct = async (req, res) => {
       error: error.message,
     });
   }
-};
+});
 
 // Delete product
-export const deleteProduct = async (req, res) => {
+export const deleteProduct = catchAsyncError(async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
 
@@ -100,4 +101,4 @@ export const deleteProduct = async (req, res) => {
       error: error.message,
     });
   }
-};
+});
