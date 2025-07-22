@@ -1,9 +1,12 @@
 import catchAsyncError from "../middlewares/catchAsyncError.js";
 import { Product } from "../model/productModel.js";
+import APIFilters from "../utills/apiFilters.js";
 import ErrorHandler from "../utills/errorHandler.js";
 
 export const getProducts = catchAsyncError(async (req, res) => {
   try {
+    const apiFilters = new APIFilters(Product.find(), req.query);
+    apiFilters.search();
     const products = await Product.find();
 
     res.status(200).json({
