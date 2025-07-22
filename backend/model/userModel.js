@@ -1,4 +1,3 @@
-import e from "express";
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
@@ -7,7 +6,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, "Please enter your name"],
       trim: true,
-      maxlength: [50, "Name cannot exceed 30 characters"],
+      maxlength: [50, "Name cannot exceed 50 characters"],
     },
     email: {
       type: String,
@@ -27,16 +26,16 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, "Please enter your password"],
       minlength: [6, "Password must be at least 6 characters"],
-      select: false, // Do not return password in queries
+      select: false, // Prevent password from being returned in queries
     },
     avatar: {
       public_id: {
         type: String,
-        required: true,
+        // required: true,
       },
       url: {
         type: String,
-        required: true,
+        // required: true,
       },
     },
     role: {
@@ -50,4 +49,5 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-export default mongoose.model("User", userSchema);
+
+export const User = mongoose.model("User", userSchema);

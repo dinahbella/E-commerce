@@ -7,7 +7,7 @@ import bodyParser from "body-parser";
 import productRoutes from "./routes/productRoutes.js";
 import { connectDatabase } from "./config/dbConnect.js";
 import ErrorHandler from "./utills/errorHandler.js";
-
+import userRoutes from "./routes/userRoutes.js";
 //  handle uncaught exceptions
 process.on("uncaughtException", (error) => {
   console.error(`Uncaught Exception: ${error.message}`);
@@ -30,7 +30,7 @@ app.use(cors());
 
 // routes
 app.use("/api/v1", productRoutes);
-
+app.use("/api/v1/users", userRoutes);
 // error handler
 app.use(ErrorHandler);
 
