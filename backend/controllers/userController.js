@@ -1,5 +1,6 @@
 import catchAsyncError from "../middlewares/catchAsyncError.js";
 import { User } from "../model/userModel.js";
+import sendToken from "../utills/sendToken.js";
 
 export const registerUseer = catchAsyncError(async (req, res, next) => {
   const { name, email, password } = req.body;
@@ -10,14 +11,7 @@ export const registerUseer = catchAsyncError(async (req, res, next) => {
   });
 
   // Generate JWT token
-  const token = user.getJWTToken();
-
-  res.status(201).json({
-    success: true,
-    message: "User registered successfully",
-    user,
-    token,
-  });
+  sendToken(user, 201, res);
 });
 
 export const login = catchAsyncError(async (req, res, next) => {
@@ -40,13 +34,5 @@ export const login = catchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler("Invalid email or password", 401));
   }
 
-  // Generate JWT token
-  const token = user.getJWTToken();
-
-  res.status(200).json({
-    success: true,
-    message: "User logged in successfully",
-    user,
-    token,
-  });
+  sendToken(user, 200, res);
 });
