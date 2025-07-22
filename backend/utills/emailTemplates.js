@@ -41,6 +41,12 @@ export const getResetPasswordTemplate = (user, resetUrl) => {
             color: #888;
             text-align: center;
           }
+          .fallback-link {
+            word-break: break-all;
+            margin-top: 10px;
+            font-size: 0.95em;
+            color: #555;
+          }
         </style>
       </head>
       <body>
@@ -53,9 +59,11 @@ export const getResetPasswordTemplate = (user, resetUrl) => {
           <p style="text-align: center;">
             <a class="button" href="${resetUrl}" target="_blank">Reset Password</a>
           </p>
+          <p>If the button above doesn't work, copy and paste the following link into your browser:</p>
+          <p class="fallback-link">${resetUrl}</p>
           <p>If you did not make this request, you can safely ignore this email.</p>
           <div class="footer">
-            &copy; ${new Date().getFullYear()} Your Company. All rights reserved.
+            &copy; ${new Date().getFullYear()} Dinah Mall. All rights reserved.
           </div>
         </div>
       </body>
