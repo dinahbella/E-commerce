@@ -48,17 +48,62 @@ export const getProductById = async (req, res) => {
 };
 
 export const updateProduct = async (req, res) => {
-  const product = await Product.findById(req?.params?.id);
+  try {
+    const product = await Product.findById(req.params.id);
 
-  if (!product) {
-    return res.status(404).json({
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false,
+      }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Product updated successfully",
+      product: updatedProduct,
+    });
+  } catch (error) {
+    res.status(500).json({
       success: false,
-      message: "Product not found",
+      message: "Failed to update product",
+      error: error.message,
     });
   }
-  product = await Product.findByIdAndUpdate(req?.params?.id, req.body, {
-    new: true,
-    runValidators: true,
-    useFindAndModify: false,
-  });
+};
+
+export const deleteProduct = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    await product.deleteOne(); // or use Product.findByIdAndDelete(req.params.id)
+
+    res.status(200).json({
+      success: true,
+      message: "Product deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete product",
+      error: error.message,
+    });
+  }
 };
