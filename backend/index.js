@@ -7,6 +7,8 @@ import productRoutes from "./routes/productRoutes.js";
 import { connectDatabase } from "./config/dbConnect.js";
 import ErrorHandler from "./utills/errorHandler.js";
 import userRoutes from "./routes/userRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
+
 //  handle uncaught exceptions
 process.on("uncaughtException", (error) => {
   console.error(`Uncaught Exception: ${error.message}`);
@@ -29,6 +31,7 @@ app.use(cors());
 // routes
 app.use("/api/v1", productRoutes);
 app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/orders", orderRoutes);
 // error handler
 app.use(ErrorHandler);
 
