@@ -1,45 +1,51 @@
 import ErrorHandler from "../utills/errorHandler.js";
 
 export default (err, req, res, next) => {
-  // Handle invalid MongoDB ObjectId (CastError)
+  // Clone original error to safely mutate
+  let error = { ...err };
+  error.message = err.message;
+
+  // Handle Mongoose CastError (invalid ObjectId)
   if (err.name === "CastError") {
-    const message = `Resource not found. Invalid: ${err.path}`;
-    err = new ErrorHandler(message, 400);
+    error = new ErrorHandler(`Resource not found. Invalid: ${err.path}`, 400);
   }
-  // Handle Mongoose Validation Error
+
+  // Handle Mongoose ValidationError
   if (err.name === "ValidationError") {
     const message = Object.values(err.errors)
-      .map((value) => value.message)
+      .map((val) => val.message)
       .join(", ");
-    err = new ErrorHandler(message, 400);
+    error = new ErrorHandler(message, 400);
   }
 
-  const statusCode = err.statusCode || 500;
-  const message = err.message || "Internal Server Error";
-
-  // Log for debugging
-  console.error(`Error: ${message}`, err);
-
-  if (process.env.NODE_ENV === "DEVELOPMENT") {
-    // Detailed error in development
-    return res.status(statusCode).json({
-      success: false,
-      message,
-      stack: err.stack,
-    });
+  // Handle duplicate key error
+  if (err.code === 11000) {
+    const field = Object.keys(err.keyValue).join(", ");
+    error = new ErrorHandler(`Duplicate field value: ${field}`, 400);
   }
 
-  if (process.env.NODE_ENV === "PRODUCTION") {
-    // Minimal info in production
-    return res.status(statusCode).json({
-      success: false,
-      message,
-    });
+  // Handle JWT errors (optional)
+  if (err.name === "JsonWebTokenError") {
+    error = new ErrorHandler("Invalid token. Please log in again.", 401);
   }
 
-  // Fallback (if NODE_ENV isn't set)
-  return res.status(statusCode).json({
+  if (err.name === "TokenExpiredError") {
+    error = new ErrorHandler(
+      "Your token has expired. Please log in again.",
+      401
+    );
+  }
+
+  const statusCode = error.statusCode || 500;
+  const message = error.message || "Internal Server Error";
+
+  // Logging
+  console.error("Error:", message);
+
+  // Response based on environment
+  res.status(statusCode).json({
     success: false,
     message,
+    ...(process.env.NODE_ENV === "DEVELOPMENT" && { stack: error.stack }),
   });
 };

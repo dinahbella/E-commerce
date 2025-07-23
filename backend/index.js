@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import helmet from "helmet";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import bodyParser from "body-parser";
 import productRoutes from "./routes/productRoutes.js";
 import { connectDatabase } from "./config/dbConnect.js";
 import ErrorHandler from "./utills/errorHandler.js";
@@ -26,7 +25,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
 app.use(cookieParser());
 app.use(cors());
-// app.use(bodyParser(json()));
 
 // routes
 app.use("/api/v1", productRoutes);
