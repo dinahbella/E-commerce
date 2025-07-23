@@ -20,13 +20,14 @@ export default (err, req, res, next) => {
 
   // Handle duplicate key error
   if (err.code === 11000) {
-    const field = Object.keys(err.keyValue).join(", ");
+    const field = `Duplicate ${Object.keys(err.keyValue)}entered.`;
     error = new ErrorHandler(`Duplicate field value: ${field}`, 400);
   }
 
   // Handle JWT errors (optional)
   if (err.name === "JsonWebTokenError") {
-    error = new ErrorHandler("Invalid token. Please log in again.", 401);
+    const message = `JSON Web Token is invalid. Please try again.`;
+    error = new ErrorHandler(message, 400);
   }
 
   if (err.name === "TokenExpiredError") {
@@ -45,7 +46,7 @@ export default (err, req, res, next) => {
   // Response based on environment
   res.status(statusCode).json({
     success: false,
-    message,
+    message: error.message,
     ...(process.env.NODE_ENV === "DEVELOPMENT" && { stack: error.stack }),
   });
 };

@@ -1,6 +1,7 @@
 import express from "express";
 import {
   forgotPassword,
+  getUserProfile,
   login,
   logout,
   registerUser,
@@ -10,9 +11,10 @@ import {
 const router = express.Router();
 
 router.route("/register").post(registerUser);
-router.route("/login").post(login); // Assuming you have a login function in userController.js
+router.route("/login").post(login);
 router.route("/logout").get(logout);
 
-router.route("/password/forgot").post(forgotPassword); // Assuming you have a forgotPassword function in userController.js
-router.route("/password/reset/:token").put(resetPassword); // Assuming you have a resetPassword function in userController.js
-export default router;
+router.route("/password/forgot").post(forgotPassword);
+router.route("/password/reset/:token").put(resetPassword);
+
+router.route("/me").get(getUserProfile);
