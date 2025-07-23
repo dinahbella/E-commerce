@@ -187,3 +187,42 @@ export const getUserDetails = catchAsyncError(async (req, res, next) => {
     user,
   });
 });
+
+// Update user details => ADMIN
+export const updateUserDetails = catchAsyncError(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    return next(
+      new ErrorHandler(`User not found with id: ${req.params.id}`, 404)
+    );
+  }
+
+  const { name, email, role } = req.body;
+  user.name = name;
+  user.email = email;
+  user.role = role;
+
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: "User details updated successfully",
+    user,
+  });
+});
+// Delete user => ADMIN
+export const deleteUser = catchAsyncError(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    return next(
+      new ErrorHandler(`User not found with id: ${req.params.id}`, 404)
+    );
+  }
+
+  await user.remove();
+
+  res.status(200).json({
+    success: true,
+    message: "User deleted successfully",
+  });
+});
